@@ -1,9 +1,18 @@
-from timm.models.vision_transformer import VisionTransformer
-from dataclasses import dataclass, asdict
-from torchtext.models.roberta.model import RobertaEncoderConf, RobertaModel
-from .model import RobertaIdentityHead, CLIP
-import torchtext.transforms
+from dataclasses import asdict, dataclass
+
 import torch
+import torchtext.transforms
+from timm.models.vision_transformer import VisionTransformer
+from torchtext.models.roberta.model import RobertaEncoderConf, RobertaModel
+from torchtext.utils import get_asset_local_path
+
+from .model import CLIP, RobertaIdentityHead
+
+
+XLMR_SP_MODEL_URL = "https://dl.fbaipublicfiles.com/maws/pretrain/clip/xlmr_tokenizer/xlmr.sentencepiece.bpe.model"
+XLMR_VOCAB_MODEL_URL = (
+    "https://dl.fbaipublicfiles.com/maws/pretrain/clip/xlmr_tokenizer/xlmr.vocab.pt"
+)
 
 
 @dataclass
@@ -15,42 +24,48 @@ class ViTConf:
     num_classes: int = 0
 
 
-AVAILABLE_MODEL_TYPES = [
-    "mae",
-    "maws",
-    "maws_lit",
-]
+@dataclass
+class CLIPConf:
+    embed_dim: int
+    vision_encoder_width: int
+    text_encoder_width: int
+
 
 AVAILABLE_MODELS = {
-    "mae": [
-        "vit_b16",
-    ],
-    "maws": [
-        "vit_b16",
-    ],
-    "maws_clip": [
-        "vit_b16_xlmr_b",
-    ],
+    "mae": {
+        "vit_b16": None,
+    },
+    "maws": {
+        "vit_b16": None,
+    },
+    "maws_clip": {
+        "vit_b16_xlmr_b": "https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_b16_xlmr_b.pt",
+    },
 }
 
 MODEL_CONFIGS = {
     "vit_b16": ViTConf(patch_size=16, embed_dim=768, depth=12, num_heads=12),
     "vit_b16_xlmr_b": [
+        CLIPConf(embed_dim=768, vision_encoder_width=768, text_encoder_width=768),
         ViTConf(patch_size=16, embed_dim=768, depth=12, num_heads=12),
-        RobertaEncoderConf(vocab_size=250002, embedding_dim=768, ffn_dimension=3072, num_attention_heads=12, num_encoder_layers=12),
-    ]
+        RobertaEncoderConf(
+            vocab_size=250002,
+            embedding_dim=768,
+            ffn_dimension=3072,
+            num_attention_heads=12,
+            num_encoder_layers=12,
+        ),
+    ],
 }
 
 
 def build_xlmr_tokenizer(sentence_piece_model_path, vocab_model_path, context_length):
-    with open(vocab_model_path, "rb") as f:
-        vocab_model_state_dict = torch.load(f, map_location="cpu")
-
+    vocab_model = torch.load(get_asset_local_path(vocab_model_path), map_location="cpu")
     return torchtext.transforms.Sequential(
         torchtext.transforms.SentencePieceTokenizer(
-            sp_model_path=sentence_piece_model_path,
+            sp_model_path=get_asset_local_path(sentence_piece_model_path),
         ),
-        torchtext.transforms.VocabTransform(vocab_model_state_dict),
+        torchtext.transforms.VocabTransform(vocab_model),
         torchtext.transforms.Truncate(context_length),
         torchtext.transforms.AddToken(token=0, begin=True),
         torchtext.transforms.AddToken(token=2, begin=False),
@@ -60,25 +75,30 @@ def build_xlmr_tokenizer(sentence_piece_model_path, vocab_model_path, context_le
         ),
     )
 
-def build_model(model_name, model_type, pretrained=False):
-    assert model_type in AVAILABLE_MODEL_TYPES
+
+def build_model(model_name, model_type, pretrained=True):
+    assert model_type in AVAILABLE_MODELS
     assert model_name in AVAILABLE_MODELS[model_type]
     model_config = MODEL_CONFIGS[model_name]
     if model_type != "maws_clip":
-        # just a ViT
         model = VisionTransformer(**asdict(model_config))
     else:
-        vision_encoder = VisionTransformer(**asdict(model_config[0]))
+        vision_encoder = VisionTransformer(**asdict(model_config[1]))
         text_encoder_head = RobertaIdentityHead()
-        text_encoder = RobertaModel(model_config[1], text_encoder_head)
-        text_tokenizer = build_xlmr_tokenizer(None, None, 100)
+        text_encoder = RobertaModel(model_config[2], text_encoder_head)
+        text_tokenizer = build_xlmr_tokenizer(
+            sentence_piece_model_path=XLMR_SP_MODEL_URL,
+            vocab_model_path=XLMR_VOCAB_MODEL_URL,
+            context_length=100,
+        )
 
         model = CLIP(
-            vision_encoder,
-            text_encoder,
-            text_tokenizer,
-            embed_dim=768,
-            vision_proj_width=768,
-            text_proj_width=768,
+            vision_encoder, text_encoder, text_tokenizer, **asdict(model_config[0])
         )
+    if pretrained:
+        checkpoint = torch.load(
+            get_asset_local_path(AVAILABLE_MODELS[model_type][model_name]),
+            map_location="cpu",
+        )
+        model.load_state_dict(checkpoint)
     return model

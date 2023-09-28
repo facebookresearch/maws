@@ -21,3 +21,13 @@ ViT-L |
 ViT-H | 
 ViT-2B | 
 ViT-2B-IN1k |
+
+# Installation instructions
+
+```bash
+conda create --name maws python=3.10
+conda activate maws
+pip install torch torchvision torchtext
+pip install timm==0.9.7
+pip install jupyter ipywidgets
+```
