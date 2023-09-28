@@ -1,10 +1,12 @@
 import contextlib
+
 import torch
 
 
 _STACK = contextlib.ExitStack()
 
 
+# FIXME: only call this once
 def start_inference_mode(device="cpu"):
     global _STACK
     _STACK.enter_context(torch.inference_mode())

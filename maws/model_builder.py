@@ -40,6 +40,9 @@ AVAILABLE_MODELS = {
     },
     "maws_clip": {
         "vit_b16_xlmr_b": "https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_b16_xlmr_b.pt",
+        "vit_l16_xlmr_l": "https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_l16_xlmr_l.pt",
+        "vit_h14_xlmr_l": "https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_h14_xlmr_l.pt",
+        "vit_2b14_xlmr_l": "https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_2b14_xlmr_l.pt",
     },
 }
 
@@ -54,6 +57,39 @@ MODEL_CONFIGS = {
             ffn_dimension=3072,
             num_attention_heads=12,
             num_encoder_layers=12,
+        ),
+    ],
+    "vit_l16_xlmr_l": [
+        CLIPConf(embed_dim=1024, vision_encoder_width=1024, text_encoder_width=1024),
+        ViTConf(patch_size=16, embed_dim=1024, depth=24, num_heads=16),
+        RobertaEncoderConf(
+            vocab_size=250002,
+            embedding_dim=1024,
+            ffn_dimension=4096,
+            num_attention_heads=16,
+            num_encoder_layers=24,
+        ),
+    ],
+    "vit_h14_xlmr_l": [
+        CLIPConf(embed_dim=1024, vision_encoder_width=1280, text_encoder_width=1024),
+        ViTConf(patch_size=14, embed_dim=1280, depth=32, num_heads=16),
+        RobertaEncoderConf(
+            vocab_size=250002,
+            embedding_dim=1024,
+            ffn_dimension=4096,
+            num_attention_heads=16,
+            num_encoder_layers=24,
+        ),
+    ],
+    "vit_2b14_xlmr_l": [
+        CLIPConf(embed_dim=2048, vision_encoder_width=2560, text_encoder_width=1024),
+        ViTConf(patch_size=14, embed_dim=2560, depth=24, num_heads=32),
+        RobertaEncoderConf(
+            vocab_size=250002,
+            embedding_dim=1024,
+            ffn_dimension=4096,
+            num_attention_heads=16,
+            num_encoder_layers=24,
         ),
     ],
 }
