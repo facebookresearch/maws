@@ -1,3 +1,9 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+
+# This source code is licensed under the license found in the
+# LICENSE file in the root directory of this source tree.
+
 from typing import Optional
 
 import numpy as np
@@ -5,11 +11,9 @@ import torch
 import torch.nn as nn
 
 
-
 class RobertaIdentityHead(nn.Module):
     def forward(self, x):
         return x[:, 0, :]
-
 
 
 class CLIP(nn.Module):
@@ -49,14 +53,15 @@ class CLIP(nn.Module):
         else:
             self.vision_projection = None
         if text_encoder_width is not None:
-            self.text_projection = nn.Parameter(torch.empty(text_encoder_width, embed_dim))
+            self.text_projection = nn.Parameter(
+                torch.empty(text_encoder_width, embed_dim)
+            )
             nn.init.normal_(self.text_projection, std=text_encoder_width**-0.5)
         else:
             self.text_projection = None
 
     def encode_images(self, images, normalize=True):
-        """
-        """
+        """ """
         x = self.vision_encoder(images)
         if self.vision_projection is not None:
             x = x @ self.vision_projection
@@ -87,15 +92,15 @@ class CLIP(nn.Module):
         assert (images is None) != (image_features is None)
         assert (texts is None) != (text_features is None)
         if image_features is None:
-            image_features = self.encode_image(images)
+            image_features = self.encode_images(images)
         if text_features is None:
-            text_features = self.encode_text(texts)
+            text_features = self.encode_texts(texts)
         result = (image_features @ text_features.t()) * self.get_logit_scale()
         if return_logits:
             return result
-        return torch.nn.functional.softmax(result)
+        return torch.nn.functional.softmax(result, dim=-1)
 
     def forward(self, images, texts, normalize=True):
-        image_features = self.encode_image(images, normalize=normalize)
-        text_features = self.encode_text(texts, normalize=normalize)
+        image_features = self.encode_images(images, normalize=normalize)
+        text_features = self.encode_texts(texts, normalize=normalize)
         return image_features, text_features, self.get_logit_scale()
