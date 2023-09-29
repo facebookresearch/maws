@@ -1,6 +1,34 @@
 # MAWS
 Code and models for the paper "The effectiveness of MAE pre-pretraining for billion-scale pretraining"
 
+# Using the Models
+
+We have models available for:
+1. MAE (pre-)pretraining
+1. MAWS (MAE→WSP) pretraining, i.e. MAE (pre-)pretraining followed by WSP pretraining
+1. MAWS pretrained models along with LiT aligned text encoders for CLIP style zero shot classification
+
+To access a model, specify the model architecture and the model type: 
+```python
+from maws.model import build_model
+
+# build a MAWS model with the aligned CLIP-style text encoder
+clip_model = build model("vit_b16_xlmr_b", "maws_clip")
+
+# build a MAWS model
+maws_model = build model("vit_b16", "maws")
+
+# build an MAE model
+mae_model = build model("vit_b16", "mae")
+```
+
+We also have an example notebook for using the models in a zero shot manner, please refer to [`clip_example.ipynb`](clip_example.ipynb).
+
+We list down all the available models, their names, and direct download links next.
+
+**TODO: Add torchhub support**
+
+
 # MAWS pretrained models
 
 Model | IN1k 224px linear | IN1k 512/518px finetuned | Text encoder | IN1k 224px 0-shot 
