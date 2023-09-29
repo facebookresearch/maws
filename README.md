@@ -39,7 +39,7 @@ If you use the SWAG models or if the work is useful in your research, please giv
 ```bibtex
 @inproceedings{singh2023effectiveness,
     title={The effectiveness of MAE pre-pretraining for billion-scale pretraining},
-    author={Singh, Mannat and Duval, Quentin and Alwala, Kalyan Vasudev and Fan, Haoqi and Aggarwal, Vaibhav and Adcock, Aaron and Joulin, Armand and Doll{\'a}r, Piotr and Feichtenhofer, Christoph and Girshick, Ross and others},
+    author={Singh, Mannat and Duval, Quentin and Alwala, Kalyan Vasudev and Fan, Haoqi and Aggarwal, Vaibhav and Adcock, Aaron and Joulin, Armand and Doll{\'a}r, Piotr and Feichtenhofer, Christoph and Girshick, Ross and Girdhar, Rohit and Misra, Ishan},
     booktitle={ICCV},
     year={2023}
 }
