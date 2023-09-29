@@ -31,3 +31,19 @@ pip install torch torchvision torchtext
 pip install timm==0.9.7
 pip install jupyter ipywidgets
 ```
+
+## Citation
+
+If you use the SWAG models or if the work is useful in your research, please give us a star and cite:  
+
+```bibtex
+@inproceedings{singh2023effectiveness,
+    title={The effectiveness of MAE pre-pretraining for billion-scale pretraining},
+    author={Singh, Mannat and Duval, Quentin and Alwala, Kalyan Vasudev and Fan, Haoqi and Aggarwal, Vaibhav and Adcock, Aaron and Joulin, Armand and Doll{\'a}r, Piotr and Feichtenhofer, Christoph and Girshick, Ross and others},
+    booktitle={ICCV},
+    year={2023}
+}
+```
+
+## License
+Our models are released under the CC-BY-NC 4.0 license. See [LICENSE](LICENSE) for additional details.
