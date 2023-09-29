@@ -34,7 +34,7 @@ pip install jupyter ipywidgets
 
 ## Citation
 
-If you use the SWAG models or if the work is useful in your research, please give us a star and cite:  
+If you use our models or if the work is useful in your research, please give us a star and cite:
 
 ```bibtex
 @inproceedings{singh2023effectiveness,
