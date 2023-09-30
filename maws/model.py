@@ -96,8 +96,10 @@ class CLIP(nn.Module):
 
     @staticmethod
     def get_cropped_images(images):
+        is_single_image = False
         if isinstance(images, (PIL.Image.Image, str)):
             images = [images]
+            is_single_image = True
         assert isinstance(images, Sequence)
         assert len(images) > 0
         if isinstance(images[0], str):
@@ -109,7 +111,9 @@ class CLIP(nn.Module):
                 torchvision.transforms.CenterCrop(size=224),
             ]
         )
-        return [crop_transform(image) for image in images]
+        images = [crop_transform(image) for image in images]
+        if is_single_image:
+            return images[0]
 
     def encode_texts(self, texts, normalize=True):
         texts_tokenized = self.text_tokenizer(texts)
