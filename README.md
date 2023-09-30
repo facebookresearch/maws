@@ -12,7 +12,7 @@ To access a model, specify the model architecture and the model type:
 ```python
 from maws.model import build_model
 
-# build a MAWS model with CLIP capabilities
+# build a MAWS model with CLIP capabilities (via an aligned text encoder)
 clip_model = build_model("vit_b16_xlmr_b", "maws_clip")
 
 # build a MAWS model

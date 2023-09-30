@@ -9,16 +9,17 @@ import contextlib
 import torch
 
 
-_STACK = contextlib.ExitStack()
+_STACK = None
 
 
-# FIXME: only call this once
 def start_inference_mode(device="cpu"):
     global _STACK
-    _STACK.enter_context(torch.inference_mode())
-    # _STACK.enter_context(torch.amp.autocast(device_type=device, dtype=torch.bfloat16))
+    if _STACK is None:
+        _STACK = contextlib.ExitStack()
+        _STACK.enter_context(torch.inference_mode())
 
 
 def reset_inference_mode():
     global _STACK
     _STACK.close()
+    _STACK = None
