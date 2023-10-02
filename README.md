@@ -60,6 +60,13 @@ pip install timm==0.9.7
 pip install jupyter ipywidgets
 ```
 
+# Zero-shot evaluation on In1k
+```bash
+python eval_zeroshot.py --model vit_b16_xlmr_b --in1k-dir <Path to your 1n1k root folder containing "train" and "va" directories>
+
+# For evaluating on other models, please refer to all the available model names in maws/model_builder.py
+```
+
 ## Citation
 
 If you use our models or if the work is useful in your research, please give us a star and cite:

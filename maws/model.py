@@ -69,9 +69,13 @@ class CLIP(nn.Module):
             x = torch.nn.functional.normalize(x, dim=-1)
         return x
 
-    def encode_texts(self, texts, normalize=True):
-        texts_tokenized = self.text_tokenizer(texts)
-        x = self.text_encoder(texts_tokenized)
+    def encode_texts(self, texts, normalize=True, skip_tokenizer=False):
+        if not skip_tokenizer:
+            texts_tokenized = self.text_tokenizer(texts)
+        else:
+            texts_tokenized = texts
+        model_device = next(self.parameters()).device
+        x = self.text_encoder(texts_tokenized.to(model_device))
         if self.text_projection is not None:
             x = x @ self.text_projection
         if normalize:
