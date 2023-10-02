@@ -12,7 +12,7 @@ To access a model, specify the model architecture and the model type:
 ```python
 from maws.model import build_model
 
-# build a MAWS model with CLIP capabilities
+# build a MAWS model with CLIP capabilities (via an aligned text encoder)
 clip_model = build_model("vit_b16_xlmr_b", "maws_clip")
 
 # build a MAWS model
@@ -57,7 +57,8 @@ conda create --name maws python=3.10
 conda activate maws
 pip install torch torchvision torchtext
 pip install timm==0.9.7
-pip install jupyter ipywidgets
+# for demo
+pip install jupyter ipywidgets matplotlib
 ```
 
 # Zero-shot evaluation on In1k

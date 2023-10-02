@@ -4,11 +4,14 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Optional
+from typing import Optional, Sequence
 
 import numpy as np
+import PIL
 import torch
 import torch.nn as nn
+import torchvision.transforms
+from torchtext.utils import get_asset_local_path
 
 
 class RobertaIdentityHead(nn.Module):
@@ -61,7 +64,18 @@ class CLIP(nn.Module):
             self.text_projection = None
 
     def encode_images(self, images, normalize=True):
-        """ """
+        if isinstance(images, (PIL.Image.Image, str)):
+            images = [images]
+        if isinstance(images, Sequence):
+            assert len(images) > 0
+            if isinstance(images[0], str):
+                images = [get_asset_local_path(image) for image in images]
+                images = [PIL.Image.open(image).convert("RGB") for image in images]
+            if isinstance(images[0], PIL.Image.Image):
+                transform = self.get_image_transform()
+                images = torch.stack([transform(image) for image in images], dim=0)
+        else:
+            assert isinstance(images, torch.Tensor)
         x = self.vision_encoder(images)
         if self.vision_projection is not None:
             x = x @ self.vision_projection
@@ -69,13 +83,45 @@ class CLIP(nn.Module):
             x = torch.nn.functional.normalize(x, dim=-1)
         return x
 
+    @staticmethod
+    def get_image_transform():
+        return torchvision.transforms.Compose(
+            [
+                torchvision.transforms.Resize(size=224, interpolation=3),
+                torchvision.transforms.CenterCrop(size=224),
+                torchvision.transforms.ToTensor(),
+                torchvision.transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
+            ]
+        )
+
+    @staticmethod
+    def get_cropped_images(images):
+        is_single_image = False
+        if isinstance(images, (PIL.Image.Image, str)):
+            images = [images]
+            is_single_image = True
+        assert isinstance(images, Sequence)
+        assert len(images) > 0
+        if isinstance(images[0], str):
+            images = [get_asset_local_path(image) for image in images]
+            images = [PIL.Image.open(image).convert("RGB") for image in images]
+        # now we have a list of PIL images
+        crop_transform = torchvision.transforms.Compose(
+            [
+                torchvision.transforms.Resize(size=224, interpolation=3),
+                torchvision.transforms.CenterCrop(size=224),
+            ]
+        )
+        images = [crop_transform(image) for image in images]
+        if is_single_image:
+            return images[0]
+
     def encode_texts(self, texts, normalize=True, skip_tokenizer=False):
         if not skip_tokenizer:
-            texts_tokenized = self.text_tokenizer(texts)
-        else:
-            texts_tokenized = texts
-        model_device = next(self.parameters()).device
-        x = self.text_encoder(texts_tokenized.to(model_device))
+            texts = self.text_tokenizer(texts)
+        x = self.text_encoder(texts)
         if self.text_projection is not None:
             x = x @ self.text_projection
         if normalize:
