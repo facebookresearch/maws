@@ -97,9 +97,7 @@ def get_per_label_text_embeddings(per_label_templates, clip_model):
 
 def forward_val(images, clip_model, per_class_text_embeddings):
     image_feature = clip_model.encode_images(images=images)
-    logits_per_image = (
-        image_feature @ per_class_text_embeddings.t()
-    ) * clip_model.get_logit_scale()
+    logits_per_image = image_feature @ per_class_text_embeddings.t()
     return logits_per_image
 
 
@@ -168,6 +166,7 @@ def main(args):
     print("Downloading and building the clip model: ", args.model)
     clip_model = build_model(args.model, "maws_clip")
     clip_model = clip_model.to(args.device)
+    clip_model = clip_model.eval()
 
     templates_path = get_asset_local_path(S3_PATHS["templates_openai"])
     labels_path = get_asset_local_path(S3_PATHS["classnames_zs"])
