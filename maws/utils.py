@@ -35,6 +35,9 @@ def predict_probs_for_image(model, image_path, texts):
 
 
 def plot_probs(texts, probs, fig_ax, lang_type=None):
+    # reverse the order to plot from top to bottom
+    probs = probs[::-1]
+    texts = texts[::-1]
     probs = np.array(probs)
     if fig_ax is None:
         fig, ax = plt.subplots(figsize=(6, 3))
