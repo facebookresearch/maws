@@ -11,6 +11,7 @@ import PIL
 import torch
 import torch.nn as nn
 import torchvision.transforms
+from torchtext.utils import get_asset_local_path
 
 
 class RobertaIdentityHead(nn.Module):
@@ -68,6 +69,7 @@ class CLIP(nn.Module):
         if isinstance(images, Sequence):
             assert len(images) > 0
             if isinstance(images[0], str):
+                images = [get_asset_local_path(image) for image in images]
                 images = [PIL.Image.open(image).convert("RGB") for image in images]
             if isinstance(images[0], PIL.Image.Image):
                 transform = self.get_image_transform()
@@ -103,6 +105,7 @@ class CLIP(nn.Module):
         assert isinstance(images, Sequence)
         assert len(images) > 0
         if isinstance(images[0], str):
+            images = [get_asset_local_path(image) for image in images]
             images = [PIL.Image.open(image).convert("RGB") for image in images]
         # now we have a list of PIL images
         crop_transform = torchvision.transforms.Compose(

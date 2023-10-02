@@ -57,7 +57,8 @@ conda create --name maws python=3.10
 conda activate maws
 pip install torch torchvision torchtext
 pip install timm==0.9.7
-pip install jupyter ipywidgets
+# for demo
+pip install jupyter ipywidgets matplotlib
 ```
 
 ## Citation
