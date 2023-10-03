@@ -133,7 +133,7 @@ def compute_accuracy(total_top1, total_images):
 
 
 def main(args):
-    print("Downloading and building the clip model: ", args.model)
+    print("Downloading and building the clip model:", args.model)
     clip_model = build_model(args.model, "maws_clip")
     clip_model = clip_model.to(args.device)
     clip_model = clip_model.eval()
