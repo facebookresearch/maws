@@ -1,5 +1,5 @@
 # MAWS
-Models for the paper "The effectiveness of MAE pre-pretraining for billion-scale pretraining" for both MAE pre-pretraining and the follow up WSP pretraining, MAE→WSP, which we call MAWS (Masked Autoencoding → Weakly Supervised pretraining).
+Models for the paper [The effectiveness of MAE pre-pretraining for billion-scale pretraining](https://arxiv.org/abs/2303.13496) for both MAE pre-pretraining and the follow up WSP pretraining, MAE→WSP, which we call MAWS (Masked Autoencoding → Weakly Supervised pretraining).
 
 ## Getting started
 
