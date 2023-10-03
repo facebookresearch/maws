@@ -17,8 +17,14 @@ from tqdm import tqdm
 
 
 IN1K_METADATA = {
-    "templates": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/templates.npy",
-    "classnames_zs": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/classnames_zs.npy",
+    "english": {
+        "templates": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/templates.npy",
+        "classnames_zs": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/classnames_zs.npy",
+    },
+    "french": {
+        "templates": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/templates_openai_fr.npy",
+        "classnames_zs": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/classnames_zs_fr.npy",
+    }
 }
 
 
@@ -49,6 +55,9 @@ def get_args_parser():
     )
     parser.add_argument(
         "--device", "-d", default="cuda", type=str, help="Device to run evaluation on"
+    )
+    parser.add_argument(
+        "--language", "-l", default="english", type=str, help="The language used for the labels (default is english)"
     )
     return parser
 
@@ -138,8 +147,13 @@ def main(args):
     clip_model = clip_model.to(args.device)
     clip_model = clip_model.eval()
 
-    templates_path = get_asset_local_path(IN1K_METADATA["templates"])
-    labels_path = get_asset_local_path(IN1K_METADATA["classnames_zs"])
+    print("Retrieving the ImageNet meta data for the chosen language...")
+    language = args.language
+    if language not in IN1K_METADATA:
+        available = list(IN1K_METADATA.keys())
+        raise ValueError(f"Unsupported language, please use one of: {available}")
+    templates_path = get_asset_local_path(IN1K_METADATA[language]["templates"])
+    labels_path = get_asset_local_path(IN1K_METADATA[language]["classnames_zs"])
     per_label_templates = gen_label_strings(templates_path, labels_path)
 
     print("Generating text embedding for class templates...")
@@ -147,6 +161,7 @@ def main(args):
         per_label_templates, clip_model
     )
 
+    print("Loading the dataset...")
     val_loader = make_val_dataloader(args)
 
     total_top1 = 0

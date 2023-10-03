@@ -82,6 +82,11 @@ Please refer to all the available model names in the [MAWS Pretrained models](#m
 
 ```bash
 python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH
+# You should get 74.888 top-1 accuracy
+
+# Trying the french language instead
+python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH --language french
+# You should get 48.448 top-1 accuracy
 ```
 
 ## Citation
