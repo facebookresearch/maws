@@ -78,7 +78,7 @@ ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae_in1k/vit_2b
 
 ## Zero-shot evaluation on ImageNet-1k
 
-Please refer to all the available model names in the [MAWS Pretrained models section](maws-pretrained-models). `$IN1K_VAL_PATH` should be the path to the ImageNet-1k val root folder.
+Please refer to all the available model names in the [MAWS Pretrained models](#maws-pretrained-models) section. `$IN1K_VAL_PATH` should be the path to the ImageNet-1k val root folder.
 
 ```bash
 python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH
