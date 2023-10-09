@@ -67,7 +67,7 @@ ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_2b14.p
 
 Model | Model name + weights | IN1k 224px finetuned
 --- | --- | ---
-ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/mae/pretrain/mae/vit_b16.pt) | 83.5
+ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_b16.pt) | 83.5
 ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_l16.pt) | 86.1
 ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_h14.pt) | 87.4
 ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_2b14.pt) | 87.8
