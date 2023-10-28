@@ -1,3 +1,10 @@
 .ipynb_checkpoints
 __pycache__
 .vscode/* 
+
+# website
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
