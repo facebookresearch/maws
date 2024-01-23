@@ -19,7 +19,7 @@ For building any of our models, select which model type you would like to build.
 
 To access a model, specify the model architecture and the model type: 
 ```python
-from maws.model import build_model
+from maws.model_builder import build_model
 
 # build a MAWS model with CLIP capabilities (via an aligned text encoder)
 clip_model = build_model("vit_b16_xlmr_b", "maws_clip")
@@ -65,6 +65,7 @@ ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_b16.pt) 
 ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_l16.pt) | 86.1 | 88.8 | XLMR-L | [vit_l16_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_l16_xlmr_l.pt) | 79.7
 ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_h14.pt) | 87.5 | 89.4 | XLMR-L | [vit_h14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_h14_xlmr_l.pt) | 81.1
 ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_2b14.pt) | 88.1 | 89.7 | XLMR-L | [vit_2b14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_2b14_xlmr_l.pt) | 82.1
+ViT-6.5B | [vit_6.5b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_6.5b14.pt) | 88.6 | 90.1
 
 ### MAE pretrained models
 
@@ -74,6 +75,7 @@ ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_b16.pt) |
 ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_l16.pt) | 86.1
 ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_h14.pt) | 87.4
 ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_2b14.pt) | 87.8
+ViT-6.5B | [vit_6.5b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_6.5b14.pt) | 88.3
 
 ### MAE pretrained on ImageNet-1k
 
