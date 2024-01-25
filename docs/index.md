@@ -17,6 +17,6 @@ _This paper revisits the standard pretrain-then-finetune paradigm used in comput
 
 **Released Models:**
 
-We release the following models at various ViT sizes (Base, Large, Huge, and 2 Billion):
-- <ins>Strong foundational MAWS (MAE→WSP) models</ins> with the following accuracy on ImageNet-1k: 89.7% finetuned, 88.1% linear probe, and 82.1% zero shot
-- <ins>Improved Masked Autoencoder (MAE) models</ins> pretrained on 3 billion images, which outperform MAE models pretrained on ImageNet-1k
+We release the following models at various ViT sizes (Base, Large, Huge, 2B, 6.5B):
+- <ins>Strong foundational MAWS (MAE→WSP) models</ins> with the following accuracy on ImageNet-1k: 90.1% finetuned, 88.6% linear probe, and 82.1% zero shot
+- <ins>Improved Masked Autoencoder (MAE) models</ins> pretrained on 3 billion images, which outperform MAE models pretrained on ImageNet-1k at all size scales
