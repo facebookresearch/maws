@@ -1,5 +1,11 @@
 # MAWS
-Models for the paper "The effectiveness of MAE pre-pretraining for billion-scale pretraining" for both MAE pre-pretraining and the follow up WSP pretraining, MAE→WSP, which we call MAWS (Masked Autoencoding → Weakly Supervised pretraining).
+
+[[`Paper`](https://arxiv.org/abs/2303.13496)] [[`Colab`](https://colab.research.google.com/github/facebookresearch/maws/blob/main/clip_example.ipynb)] [[`BibTex`](#citation)] [[`Website`](https://facebookresearch.github.io/maws/)]
+
+Models for the paper [The effectiveness of MAE pre-pretraining for billion-scale pretraining](https://arxiv.org/abs/2303.13496) for both MAE pre-pretraining and the follow up WSP pretraining, MAE→WSP, which we call MAWS (Masked Autoencoding → Weakly Supervised pretraining).
+<p align="center">
+  <img width="539" alt="image" src="https://github.com/facebookresearch/maws/assets/13458796/69afa2ca-9976-4c64-9814-1f906be05e36">
+</p>
 
 ## Getting started
 
@@ -13,7 +19,7 @@ For building any of our models, select which model type you would like to build.
 
 To access a model, specify the model architecture and the model type: 
 ```python
-from maws.model import build_model
+from maws.model_builder import build_model
 
 # build a MAWS model with CLIP capabilities (via an aligned text encoder)
 clip_model = build_model("vit_b16_xlmr_b", "maws_clip")
@@ -59,15 +65,17 @@ ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_b16.pt) 
 ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_l16.pt) | 86.1 | [vit_l16_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_l16_512.pt) | 88.8 | XLMR-L | [vit_l16_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_l16_xlmr_l.pt) | 79.7
 ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_h14.pt) | 87.5 | [vit_h14_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_h14_518.pt) | 89.4 | XLMR-L | [vit_h14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_h14_xlmr_l.pt) | 81.1
 ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_2b14.pt) | 88.1 | [vit_2b14_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_2b14_518.pt) | 89.7 | XLMR-L | [vit_2b14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_2b14_xlmr_l.pt) | 82.1
+ViT-6.5B | [vit_6.5b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_6.5b14.pt) | 88.6 | 90.1
 
 ### MAE pretrained models
 
 Model | Model name + weights | IN1k 224px finetuned
 --- | --- | ---
-ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/mae/pretrain/mae/vit_b16.pt) | 83.5
+ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_b16.pt) | 83.5
 ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_l16.pt) | 86.1
 ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_h14.pt) | 87.4
 ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_2b14.pt) | 87.8
+ViT-6.5B | [vit_6.5b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_6.5b14.pt) | 88.3
 
 ### MAE pretrained on ImageNet-1k
 
@@ -104,9 +112,9 @@ Please refer to all the available model names in the [MAWS Pretrained models](#m
 python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH
 # Zero shot ImageNet-1k top-1 accuracy: 74.888
 
-# Trying the french language instead
-python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH --language french
-# Zero shot ImageNet-1k top-1 accuracy: 48.448
+# Trying the french language instead with a larger model on a 32GB V100
+python eval_zeroshot.py -m vit_2b14_xlmr_l -p $IN1K_VAL_PATH -b 5 --language french
+# Zero shot ImageNet-1k top-1 accuracy: 62.622
 ```
 
 ## Citation
