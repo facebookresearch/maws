@@ -28,6 +28,7 @@ class ViTConf:
     depth: int
     num_heads: int
     num_classes: int = 0
+    img_size: int = 224
 
 
 @dataclass
@@ -46,12 +47,19 @@ AVAILABLE_MODELS = {
         "vit_l16": "https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_l16.pt",
         "vit_h14": "https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_h14.pt",
         "vit_2b14": "https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_2b14.pt",
+        "vit_6.5b14": "https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_6.5b14.pt",
     },
     "maws": {
         "vit_b16": "https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_b16.pt",
         "vit_l16": "https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_l16.pt",
         "vit_h14": "https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_h14.pt",
         "vit_2b14": "https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_2b14.pt",
+        "vit_6.5b14": "https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_6.5b14.pt",
+        "vit_b16_ft_in1k": "https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_b16_512.pt",
+        "vit_l16_ft_in1k": "https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_l16_512.pt",
+        "vit_h14_ft_in1k": "https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_h14_518.pt",
+        "vit_2b14_ft_in1k": "https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_2b14_518.pt",
+        "vit_6.5b14_ft_in1k": "https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_6.5b14_518.pt",
     },
     "maws_clip": {
         "vit_b16_xlmr_b": "https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_b16_xlmr_b.pt",
@@ -66,6 +74,12 @@ MODEL_CONFIGS = {
     "vit_l16": ViTConf(patch_size=16, embed_dim=1024, depth=24, num_heads=16),
     "vit_h14": ViTConf(patch_size=14, embed_dim=1280, depth=32, num_heads=16),
     "vit_2b14": ViTConf(patch_size=14, embed_dim=2560, depth=24, num_heads=32),
+    "vit_6.5b14": ViTConf(patch_size=14, embed_dim=4096, depth=32, num_heads=32),
+    "vit_b16_ft_in1k": ViTConf(patch_size=16, embed_dim=768, depth=12, num_heads=12, num_classes=1000, img_size=512),
+    "vit_l16_ft_in1k": ViTConf(patch_size=16, embed_dim=1024, depth=24, num_heads=16, num_classes=1000, img_size=512),
+    "vit_h14_ft_in1k": ViTConf(patch_size=14, embed_dim=1280, depth=32, num_heads=16, num_classes=1000, img_size=518),
+    "vit_2b14_ft_in1k": ViTConf(patch_size=14, embed_dim=2560, depth=24, num_heads=32, num_classes=1000, img_size=518),
+    "vit_6.5b14_ft_in1k": ViTConf(patch_size=14, embed_dim=4096, depth=32, num_heads=32, num_classes=1000, img_size=518),
     "vit_b16_xlmr_b": [
         CLIPConf(embed_dim=768, vision_encoder_width=768, text_encoder_width=768),
         ViTConf(patch_size=16, embed_dim=768, depth=12, num_heads=12),

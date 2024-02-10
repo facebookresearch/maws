@@ -53,12 +53,12 @@ pip install jupyter ipywidgets matplotlib
 ## Available models
 ### MAWS pretrained models
 
-Model | Model name + weights | IN1k 224px linear | IN1k 512/518px finetuned | Text encoder | Model name + weights | IN1k 224px 0-shot 
+Model | Model name + weights | IN1k 224px linear | IN1k finetuned model name + weights | IN1k 512/518px finetuned | Text encoder | 0-Shot Model name + weights | IN1k 224px 0-shot 
 --- | --- | --- | --- | --- | --- | ---
-ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_b16.pt) | 83.3 | 86.4 | XLMR-B | [vit_b16_xlmr_b](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_b16_xlmr_b.pt) | 74.9
-ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_l16.pt) | 86.1 | 88.8 | XLMR-L | [vit_l16_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_l16_xlmr_l.pt) | 79.7
-ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_h14.pt) | 87.5 | 89.4 | XLMR-L | [vit_h14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_h14_xlmr_l.pt) | 81.1
-ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_2b14.pt) | 88.1 | 89.7 | XLMR-L | [vit_2b14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_2b14_xlmr_l.pt) | 82.1
+ViT-B | [vit_b16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_b16.pt) | 83.3 | [vit_b16_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_b16_512.pt) | 86.4 | XLMR-B | [vit_b16_xlmr_b](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_b16_xlmr_b.pt) | 74.9
+ViT-L | [vit_l16](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_l16.pt) | 86.1 | [vit_l16_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_l16_512.pt) | 88.8 | XLMR-L | [vit_l16_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_l16_xlmr_l.pt) | 79.7
+ViT-H | [vit_h14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_h14.pt) | 87.5 | [vit_h14_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_h14_518.pt) | 89.4 | XLMR-L | [vit_h14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_h14_xlmr_l.pt) | 81.1
+ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/maws/vit_2b14.pt) | 88.1 | [vit_2b14_ft_in1k](https://dl.fbaipublicfiles.com/maws/finetune/in1k/maws/vit_2b14_518.pt) | 89.7 | XLMR-L | [vit_2b14_xlmr_l](https://dl.fbaipublicfiles.com/maws/pretrain/clip/vit_2b14_xlmr_l.pt) | 82.1
 
 ### MAE pretrained models
 
@@ -76,17 +76,37 @@ Model | Model name + weights | IN1k 224px finetuned
 ViT-2B | [vit_2b14](https://dl.fbaipublicfiles.com/maws/pretrain/mae_in1k/vit_2b14.pt) | 87.4
 
 
-## Zero-shot evaluation on ImageNet-1k
+## Evaluation on ImageNet-1k
 
+### Finetuned
+Please refer to all the available model names in the [MAWS Pretrained models](#maws-pretrained-models) section. `$IN1K_VAL_PATH` should be the path to the ImageNet-1k val root folder.
+
+```bash
+python eval_finetuned.py -m vit_b16_ft_in1k -i 512 -b 25 -p $IN1K_VAL_PATH
+# ImageNet-1k top-1 accuracy: 86.666
+
+python eval_finetuned.py -m vit_l16_ft_in1k -i 512 -b 10 -p $IN1K_VAL_PATH
+# ImageNet-1k top-1 accuracy: 88.7
+
+python eval_finetuned.py -m vit_h14_ft_in1k -i 518 -b 5 -p $IN1K_VAL_PATH
+# ImageNet-1k top-1 accuracy: 89.358
+
+python eval_finetuned.py -m vit_2b14_ft_in1k -i 518 -b 5 -p $IN1K_VAL_PATH
+
+
+python eval_finetuned.py -m vit_6.5b14_ft_in1k -i 518 -b 5 -p $IN1K_VAL_PATH
+```
+
+### Zero-shot
 Please refer to all the available model names in the [MAWS Pretrained models](#maws-pretrained-models) section. `$IN1K_VAL_PATH` should be the path to the ImageNet-1k val root folder.
 
 ```bash
 python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH
-# You should get 74.888 top-1 accuracy
+# Zero shot ImageNet-1k top-1 accuracy: 74.888
 
 # Trying the french language instead
 python eval_zeroshot.py -m vit_b16_xlmr_b -p $IN1K_VAL_PATH --language french
-# You should get 48.448 top-1 accuracy
+# Zero shot ImageNet-1k top-1 accuracy: 48.448
 ```
 
 ## Citation
