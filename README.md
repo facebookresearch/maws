@@ -12,7 +12,7 @@ Models for the paper [The effectiveness of MAE pre-pretraining for billion-scale
 To get started with playing with our models immediately, we have a notebook available to play with on [Colab](https://colab.research.google.com/github/facebookresearch/maws/blob/main/clip_example.ipynb), or [locally](clip_example.ipynb) for running our models in zero-shot mode.
 
 For building any of our models, select which model type you would like to build. We have models available for:
-1. `model_type="maws"`: MAWS (MAE→WSP) pretraining, i.e. MAE pre-pretraining followed by WSP pretraining
+1. `model_type="maws"`: MAWS (MAE→WSP) pretraining, i.e. MAE pre-pretraining followed by WSP pretraining. We also have ImageNet-1k finetuned weights for MAWS models using the same model type.
 1. `model_type="maws_clip"`: MAWS pretrained models along with LiT aligned text encoders for CLIP style zero shot classification
 1. `model_type="mae"`: MAE pretrained models
 1. `model_type="mae_in1k"`: MAE pretrained on ImageNet-1k models
@@ -27,6 +27,9 @@ clip_model = build_model("vit_b16_xlmr_b", "maws_clip")
 # build a MAWS model
 maws_model = build_model("vit_b16", "maws")
 
+# build a MAWS model finetuned on IN1k
+maws_in1k_model = build_model("vit_b16_ft_in1k", "maws")
+
 # build an MAE model
 mae_model = build_model("vit_b16", "mae")
 ```
@@ -38,6 +41,9 @@ clip_model = torch.hub.load("facebookresearch/maws", model="vit_b16_xlmr_b_maws_
 
 # build a MAWS model
 maws_model = torch.hub.load("facebookresearch/maws", model="vit_b16_maws")
+
+# build a MAWS model finetuned on IN1k
+maws_model = torch.hub.load("facebookresearch/maws", model="vit_b16_ft_in1k_maws")
 
 # build an MAE model
 mae_model = torch.hub.load("facebookresearch/maws", model="vit_b16_mae")
