@@ -2,7 +2,7 @@
 
 [[`Paper`](https://arxiv.org/abs/2303.13496)] [[`Colab`](https://colab.research.google.com/github/facebookresearch/maws/blob/main/clip_example.ipynb)] [[`BibTex`](#citation)] [[`Website`](https://facebookresearch.github.io/maws/)]
 
-Models for the paper [The effectiveness of MAE pre-pretraining for billion-scale pretraining](https://arxiv.org/abs/2303.13496) for both MAE pre-pretraining and the follow up WSP pretraining, MAE→WSP, which we call MAWS (Masked Autoencoding → Weakly Supervised pretraining).
+Repository for the strong foundational MAWS + MAE models at all sizes ranging from <100M parameters to >6.5B parameters, from the paper [The effectiveness of MAE pre-pretraining for billion-scale pretraining](https://arxiv.org/abs/2303.13496). Models are available for both MAE pre-pretraining and the follow up WSP pretraining, MAE→WSP a.k.a. MAWS (Masked Autoencoding → Weakly Supervised pretraining).
 <p align="center">
   <img width="539" alt="image" src="https://github.com/facebookresearch/maws/assets/13458796/69afa2ca-9976-4c64-9814-1f906be05e36">
 </p>
