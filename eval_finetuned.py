@@ -17,14 +17,16 @@ from tqdm import tqdm
 
 
 def get_args_parser():
-    parser = argparse.ArgumentParser(
-        description="ImageNet evaluation", add_help=False
-    )
+    parser = argparse.ArgumentParser(description="ImageNet evaluation", add_help=False)
     parser.add_argument(
         "--batch_size", "-b", default=25, type=int, help="Batch size per step"
     )
+    parser.add_argument("--img_size", "-i", type=int, help="Image size")
     parser.add_argument(
-        "--img_size", "-i", type=int, help="Image size"
+        "--no_rescale",
+        "-nr",
+        help="Do not rescale images and instead use resize short size + center crop",
+        action="store_true",
     )
     parser.add_argument(
         "-w",
@@ -61,6 +63,17 @@ def make_val_dataloader(args):
         [
             torchvision.transforms.Resize(size=args.img_size, interpolation=3),
             torchvision.transforms.CenterCrop(size=args.img_size),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(
+                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+            ),
+        ]
+        if args.no_rescale
+        else 
+        [
+            torchvision.transforms.Resize(
+                size=[args.img_size, args.img_size], interpolation=3
+            ),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(
                 mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
@@ -106,7 +119,9 @@ def main(args):
             correct = pred.eq(target).sum()
             total_top1 += correct.item()
             total_images += img_trans.size(0)
-            tqdm_loader.set_description(f"top-1: {compute_accuracy(total_top1, total_images):.2f} %")
+            tqdm_loader.set_description(
+                f"top-1: {compute_accuracy(total_top1, total_images):.2f} %"
+            )
 
     print("ImageNet-1k top-1 accuracy:", compute_accuracy(total_top1, total_images))
 

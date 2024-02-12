@@ -24,7 +24,7 @@ IN1K_METADATA = {
     "french": {
         "templates": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/templates_openai_fr.npy",
         "classnames_zs": "https://dl.fbaipublicfiles.com/maws/zero_shot_in1k_assets/classnames_zs_fr.npy",
-    }
+    },
 }
 
 
@@ -57,7 +57,11 @@ def get_args_parser():
         "--device", "-d", default="cuda", type=str, help="Device to run evaluation on"
     )
     parser.add_argument(
-        "--language", "-l", default="english", type=str, help="The language used for the labels (default is english)"
+        "--language",
+        "-l",
+        default="english",
+        type=str,
+        help="The language used for the labels (default is english)",
     )
     return parser
 
@@ -145,7 +149,7 @@ def main(args):
     print("Downloading and building the clip model:", args.model)
     clip_model = build_model(args.model, "maws_clip")
     clip_model = clip_model.to(args.device)
-    clip_model = clip_model.eval()
+    clip_model = clip_model.eval().half()
 
     print("Retrieving the ImageNet meta data for the chosen language...")
     language = args.language
@@ -168,18 +172,26 @@ def main(args):
     total_images = 0
     print("Performing zero-shot inference on In1k validation split...")
     tqdm_loader = tqdm(val_loader)
-    for batch in tqdm_loader:
-        img_trans, target = batch
-        img_trans = img_trans.to(args.device)
-        target = target.to(args.device)
-        logits_per_image = forward_val(img_trans, clip_model, per_class_text_embeddings)
-        pred = logits_per_image.argmax(dim=1)
-        correct = pred.eq(target).sum()
-        total_top1 += correct.item()
-        total_images += img_trans.size(0)
-        tqdm_loader.set_description(f"top-1: {compute_accuracy(total_top1, total_images):.2f} %")
+    with torch.amp.autocast(device_type=args.device):
+        for batch in tqdm_loader:
+            img_trans, target = batch
+            img_trans = img_trans.to(args.device)
+            target = target.to(args.device)
+            logits_per_image = forward_val(
+                img_trans, clip_model, per_class_text_embeddings
+            )
+            pred = logits_per_image.argmax(dim=1)
+            correct = pred.eq(target).sum()
+            total_top1 += correct.item()
+            total_images += img_trans.size(0)
+            tqdm_loader.set_description(
+                f"top-1: {compute_accuracy(total_top1, total_images):.2f} %"
+            )
 
-    print("Zero shot ImageNet-1k top-1 accuracy:", compute_accuracy(total_top1, total_images))
+    print(
+        "Zero shot ImageNet-1k top-1 accuracy:",
+        compute_accuracy(total_top1, total_images),
+    )
 
 
 if __name__ == "__main__":
