@@ -42,6 +42,9 @@ AVAILABLE_MODELS = {
     "mae_in1k": {
         "vit_2b14": "https://dl.fbaipublicfiles.com/maws/pretrain/mae_in1k/vit_2b14.pt",
     },
+    "mae_in21k": {
+        "vit_l16": "https://dl.fbaipublicfiles.com/maws/pretrain/mae_in21k/vit_l16.pt",
+    },
     "mae": {
         "vit_b16": "https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_b16.pt",
         "vit_l16": "https://dl.fbaipublicfiles.com/maws/pretrain/mae/vit_l16.pt",
