@@ -61,6 +61,9 @@ pip install timm==0.9.7
 # for demo
 pip install jupyter ipywidgets matplotlib
 ```
+## WARNING
+Torchtext has been deprecated which has broken clip model support. If you run without torchtext, all models which aren't clip based will work fine!
+
 
 ## Available models
 ### MAWS pretrained models
