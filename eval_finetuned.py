@@ -11,7 +11,6 @@ import torch
 import torchvision.transforms
 
 from maws.model_builder import build_model
-from torchtext.utils import get_asset_local_path
 from torchvision.datasets import ImageFolder
 from tqdm import tqdm
 
@@ -69,8 +68,7 @@ def make_val_dataloader(args):
             ),
         ]
         if args.no_rescale
-        else 
-        [
+        else [
             torchvision.transforms.Resize(
                 size=[args.img_size, args.img_size], interpolation=3
             ),
