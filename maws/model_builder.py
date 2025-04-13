@@ -7,10 +7,20 @@
 from dataclasses import asdict, dataclass
 
 import torch
-import torchtext.transforms
 from timm.models.vision_transformer import VisionTransformer
-from torchtext.models.roberta.model import RobertaEncoderConf, RobertaModel
-from torchtext.utils import get_asset_local_path
+
+try:
+    from torchtext import transforms
+    from torchtext.models.roberta.model import RobertaEncoderConf, RobertaModel
+
+    TORCHTEXT_AVAILABLE = True
+except ImportError:
+    import warnings
+
+    warnings.warn("torchtext not found, clip models will not work")
+    TORCHTEXT_AVAILABLE = False
+
+from .utils import get_asset_local_path
 
 from .model import CLIP, RobertaIdentityHead
 
@@ -118,65 +128,79 @@ MODEL_CONFIGS = {
         num_classes=1000,
         img_size=518,
     ),
-    "vit_b16_xlmr_b": [
-        CLIPConf(embed_dim=768, vision_encoder_width=768, text_encoder_width=768),
-        ViTConf(patch_size=16, embed_dim=768, depth=12, num_heads=12),
-        RobertaEncoderConf(
-            vocab_size=250002,
-            embedding_dim=768,
-            ffn_dimension=3072,
-            num_attention_heads=12,
-            num_encoder_layers=12,
-        ),
-    ],
-    "vit_l16_xlmr_l": [
-        CLIPConf(embed_dim=1024, vision_encoder_width=1024, text_encoder_width=1024),
-        ViTConf(patch_size=16, embed_dim=1024, depth=24, num_heads=16),
-        RobertaEncoderConf(
-            vocab_size=250002,
-            embedding_dim=1024,
-            ffn_dimension=4096,
-            num_attention_heads=16,
-            num_encoder_layers=24,
-        ),
-    ],
-    "vit_h14_xlmr_l": [
-        CLIPConf(embed_dim=1024, vision_encoder_width=1280, text_encoder_width=1024),
-        ViTConf(patch_size=14, embed_dim=1280, depth=32, num_heads=16),
-        RobertaEncoderConf(
-            vocab_size=250002,
-            embedding_dim=1024,
-            ffn_dimension=4096,
-            num_attention_heads=16,
-            num_encoder_layers=24,
-        ),
-    ],
-    "vit_2b14_xlmr_l": [
-        CLIPConf(embed_dim=2048, vision_encoder_width=2560, text_encoder_width=1024),
-        ViTConf(patch_size=14, embed_dim=2560, depth=24, num_heads=32),
-        RobertaEncoderConf(
-            vocab_size=250002,
-            embedding_dim=1024,
-            ffn_dimension=4096,
-            num_attention_heads=16,
-            num_encoder_layers=24,
-        ),
-    ],
 }
+
+if TORCHTEXT_AVAILABLE:
+    MODEL_CONFIGS.update(
+        {
+            "vit_b16_xlmr_b": [
+                CLIPConf(
+                    embed_dim=768, vision_encoder_width=768, text_encoder_width=768
+                ),
+                ViTConf(patch_size=16, embed_dim=768, depth=12, num_heads=12),
+                RobertaEncoderConf(
+                    vocab_size=250002,
+                    embedding_dim=768,
+                    ffn_dimension=3072,
+                    num_attention_heads=12,
+                    num_encoder_layers=12,
+                ),
+            ],
+            "vit_l16_xlmr_l": [
+                CLIPConf(
+                    embed_dim=1024, vision_encoder_width=1024, text_encoder_width=1024
+                ),
+                ViTConf(patch_size=16, embed_dim=1024, depth=24, num_heads=16),
+                RobertaEncoderConf(
+                    vocab_size=250002,
+                    embedding_dim=1024,
+                    ffn_dimension=4096,
+                    num_attention_heads=16,
+                    num_encoder_layers=24,
+                ),
+            ],
+            "vit_h14_xlmr_l": [
+                CLIPConf(
+                    embed_dim=1024, vision_encoder_width=1280, text_encoder_width=1024
+                ),
+                ViTConf(patch_size=14, embed_dim=1280, depth=32, num_heads=16),
+                RobertaEncoderConf(
+                    vocab_size=250002,
+                    embedding_dim=1024,
+                    ffn_dimension=4096,
+                    num_attention_heads=16,
+                    num_encoder_layers=24,
+                ),
+            ],
+            "vit_2b14_xlmr_l": [
+                CLIPConf(
+                    embed_dim=2048, vision_encoder_width=2560, text_encoder_width=1024
+                ),
+                ViTConf(patch_size=14, embed_dim=2560, depth=24, num_heads=32),
+                RobertaEncoderConf(
+                    vocab_size=250002,
+                    embedding_dim=1024,
+                    ffn_dimension=4096,
+                    num_attention_heads=16,
+                    num_encoder_layers=24,
+                ),
+            ],
+        }
+    )
 
 
 def build_xlmr_tokenizer(sentence_piece_model_path, vocab_model_path, context_length):
     vocab_model = torch.load(get_asset_local_path(vocab_model_path), map_location="cpu")
-    return torchtext.transforms.Sequential(
-        torchtext.transforms.SentencePieceTokenizer(
+    return transforms.Sequential(
+        transforms.SentencePieceTokenizer(
             sp_model_path=get_asset_local_path(sentence_piece_model_path),
         ),
-        torchtext.transforms.VocabTransform(vocab_model),
-        torchtext.transforms.Truncate(context_length),
-        torchtext.transforms.AddToken(token=0, begin=True),
-        torchtext.transforms.AddToken(token=2, begin=False),
-        torchtext.transforms.ToTensor(padding_value=RobertaEncoderConf.padding_idx),
-        torchtext.transforms.PadTransform(
+        transforms.VocabTransform(vocab_model),
+        transforms.Truncate(context_length),
+        transforms.AddToken(token=0, begin=True),
+        transforms.AddToken(token=2, begin=False),
+        transforms.ToTensor(padding_value=RobertaEncoderConf.padding_idx),
+        transforms.PadTransform(
             max_length=context_length + 2, pad_value=RobertaEncoderConf.padding_idx
         ),
     )

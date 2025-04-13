@@ -11,7 +11,7 @@ import PIL
 import torch
 import torch.nn as nn
 import torchvision.transforms
-from torchtext.utils import get_asset_local_path
+from .utils import get_asset_local_path
 
 
 class RobertaIdentityHead(nn.Module):
